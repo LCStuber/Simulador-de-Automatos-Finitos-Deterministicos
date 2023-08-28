@@ -1,4 +1,4 @@
-import sys
+import sys, argparse
 
 class Automato:
     estados:list
@@ -88,7 +88,7 @@ def lerArquivo(path:str):
         arquivo.close()
         return linhas
     except FileNotFoundError:
-        exit(f'''O arquivo "{path}" não foi encontrado na mesma pasta que o programa Python. Por favor, verifique-o (ou remova o parâmetro de path na leitura de arquivo) e tente novamente. ''')
+        exit(f'''O arquivo "{path}" não foi encontrado. Por favor, verifique-o (ou remova o parâmetro --file para ler o arquivo "automato.txt" na raiz do projeto) e tente novamente.''')
 
 
 # Função para interpretar os dados do arquivo e armazená-los em um dicionário
@@ -144,7 +144,7 @@ def transcreverParaPython(dados):
 
 
 # Criação de um objeto Autômato interpretando os dados do arquivo
-def criarautomato(path:str="automato.txt"):
+def criarautomato(path:str):
     automato = interpretarArquivo(path)
     return automato
 
@@ -153,11 +153,21 @@ def criarautomato(path:str="automato.txt"):
 def inputCadeia():
     return input("Digite a cadeia que deseja testar com o seu autômato: ")
 
+# Recebe o argumento da localização do arquivo-texto.
+def getParser():
+    parser = argparse.ArgumentParser(
+                    prog='Simulador de Autômatos Finitos Determinísticos',
+                    description='A partir de um arquivo-texto o usuário pode testar eu autômato finito com a cadeia que deseja.',
+                    epilog='Selecione o arquivo que deseja com o -f "nomeArquivo" e depois digite as cadeias que deseja testar!')
+    parser.add_argument("-f", "--file", type=str, help='Digite a localização do arquivo que deseja a partir da path do programa. Exemplo: -f automatos.txt para inicializar com o automato.txt que esta na mesma raiz da pasta do programa.')
+
+    return parser.parse_args()
 
 # Bloco executável do programa
 if __name__ == "__main__":
+    args = getParser()
     sys.tracebacklimit = 0
-    automato = criarautomato()
+    automato = criarautomato(args.file if args.file != None else "automato.txt")
     try:
         while True:
             cadeia = inputCadeia()
