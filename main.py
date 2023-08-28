@@ -68,10 +68,10 @@ class Automato:
                 return estadoAtual in self.estados_finais
             for simbolo in cadeia:
                 contador = 0
-                for eAtual, ePróx in self.delta:
+                for eAtual, eProx in self.delta:
                     if estadoAtual == eAtual[0] and simbolo == eAtual[1]:
-                        estadoAtual = ePróx
-                        print(f"({estadoAtual}, '{simbolo}') -> {ePróx}")
+                        estadoAtual = eProx
+                        print(f"({estadoAtual}, '{simbolo}') -> {eProx}")
                         break
                     contador += 1
                 if contador == len(self.delta):
