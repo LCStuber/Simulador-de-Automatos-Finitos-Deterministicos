@@ -1,20 +1,23 @@
 import sys
 
-class Autômato:
+class Automato:
     estados:list
     sigma:list
     delta:list
     estado_inicial:str
     estados_finais:list
 
+    # Construtor da classe Autômato
     def __init__(self, estados:list, sigma:list, delta:list, estado_inicial:str, estados_finais:list):
         self.estados = estados
         self.sigma = sigma
         self.delta = delta
         self.estado_inicial = estado_inicial
         self.estados_finais = estados_finais
-        self.__testar()
+        self.__testar() # Método privado para testar as propriedades do autômato ao inicializar
 
+
+    # Método privado para testar se os estados estão definidos corretamente
     def __testarEstados(self):
         if self.estado_inicial not in self.estados:
             raise ReferenceError(f"O autômato não pôde ser criado, pois o estado {self.estado_inicial} de estado inicial não está no conjunto de estados {self.estados}.")
@@ -31,50 +34,61 @@ class Autômato:
                 raise ReferenceError(f"O autômato não pôde ser criado, pois o estado {proximo_estado} dentro do seguinte passo de delta (({estado_atual[0]},{estado_atual[1]}),{proximo_estado}) não está no conjunto de estados {self.estados}.")
         return True
 
+    # Método privado para testar se os símbolos estão definidos corretamente no alfabeto
     def __testarSigma(self):
         for estado_atual, proximo_estado in self.delta:
             if estado_atual[1] not in self.sigma:
                 raise ReferenceError(f"O autômato não pôde ser criado, pois o símbolo {estado_atual[1]} dentro do seguinte passo de delta (({estado_atual[0]},{estado_atual[1]}),{proximo_estado}) não está no alfabeto {self.sigma}.")
         return True
 
+
+    # Método privado para testar tanto os estados quanto os símbolos usando os métodos __testarEstados e __testarSigma
     def __testar(self):
         if self.__testarEstados() and self.__testarSigma():
             print("Autômato criado com sucesso!")
 
+
+    # Método privado para testar se os símbolos em uma cadeia de entrada estão no alfabeto
     def __testarCadeia(self, cadeia:str):
         if cadeia == '':
             return True
         else:
-            for i,símbolo in enumerate(cadeia):
-                if símbolo not in self.sigma:
-                    print(f"O autômato não pôde ser testado, pois o símbolo {símbolo} dentro da posição {i+1} da cadeia {cadeia} não está no alfabeto {self.sigma}.")
+            for i,simbolo in enumerate(cadeia):
+                if simbolo not in self.sigma:
+                    print(f"O autômato não pôde ser testado, pois o símbolo {simbolo} dentro da posição {i+1} da cadeia {cadeia} não está no alfabeto {self.sigma}.")
                     return False
         return True
 
+
+    # Método público para verificar se uma determinada cadeia é aceita pelo autômato
     def verificarCadeia(self, cadeia:str):
         if self.__testarCadeia(cadeia):
             estadoAtual = self.estado_inicial
             if cadeia == "":
                 return estadoAtual in self.estados_finais
-            for símbolo in cadeia:
+            for simbolo in cadeia:
                 contador = 0
                 for eAtual, ePróx in self.delta:
-                    if estadoAtual == eAtual[0] and símbolo == eAtual[1]:
+                    if estadoAtual == eAtual[0] and simbolo == eAtual[1]:
                         estadoAtual = ePróx
-                        print(f"({estadoAtual}, '{símbolo}') -> {ePróx}")
+                        print(f"({estadoAtual}, '{simbolo}') -> {ePróx}")
                         break
                     contador += 1
                 if contador == len(self.delta):
-                    print(f"Não é possível realizar a transição do estado {estadoAtual} com entrada {símbolo}")
+                    print(f"Não é possível realizar a transição do estado {estadoAtual} com entrada {simbolo}")
                     return False
             return estadoAtual in self.estados_finais
 
+
+# Leitura do arquivo "autômato.txt"
 def lerArquivo():
-    arquivo = open("autômato.txt", "r")
+    arquivo = open("automato.txt", "r")
     linhas = arquivo.readlines()
     arquivo.close()
     return linhas
 
+
+# Função para interpretar os dados do arquivo e armazená-los em um dicionário
 def interpretarArquivo():
     dados = {
     "estados":None,
@@ -109,6 +123,8 @@ def interpretarArquivo():
     
     return transcreverParaPython(dados)
 
+
+# Transcrição dos dados interpretados em um objeto Autômato
 def transcreverParaPython(dados):
     dados["estados"] = list(dados["estados"][1:-1].split(","))
     dados["sigma"] = list(dados["sigma"][1:-1].split(","))
@@ -121,22 +137,28 @@ def transcreverParaPython(dados):
             raise ValueError('''O campo "delta" do arquivo autômato.txt foi escrito de maneira incorreta. Por favor, verifique-o e tente novamente.\nEsse campo deve ser escrito da seguinte maneira: {((estado_atual,simbolo),proximo_estado),((estado_atual,simbolo),proximo_estado)}''')
     dados["estados_finais"] = list(dados["estados_finais"][1:-1].split(","))
     
-    return Autômato(dados["estados"],dados["sigma"],dados["delta"],dados["estado_inicial"],dados["estados_finais"])
+    return Automato(dados["estados"],dados["sigma"],dados["delta"],dados["estado_inicial"],dados["estados_finais"])
 
-def criarAutômato():
-    autômato = interpretarArquivo()
-    return autômato
 
+# Criação de um objeto Autômato interpretando os dados do arquivo
+def criarautomato():
+    automato = interpretarArquivo()
+    return automato
+
+
+# Input da entrada da cadeia do usuário
 def inputCadeia():
     return input("Digite a cadeia que deseja testar com o seu autômato: ")
 
+
+# Bloco executável do programa
 if __name__ == "__main__":
     sys.tracebacklimit = 0
-    autômato = criarAutômato()
+    automato = criarautomato()
     try:
         while True:
             cadeia = inputCadeia()
-            if autômato.verificarCadeia(cadeia):
+            if automato.verificarCadeia(cadeia):
                 print(f"A cadeia {cadeia} foi aceita pelo autômato!")
             else:
                 print(f"A cadeia {cadeia} foi rejeitada pelo autômato!")
