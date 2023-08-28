@@ -1,0 +1,19 @@
+estados = {q0,q1}
+sigma = {a,b}
+delta = {((q0,a),q0),((q0,b),q1),((q1,a), q1),((q1,b),q0)}
+estado_inicial = q0
+estados_finais = {q0}
+
+# Esse arquivo deve ser preenchido da seguinte maneira:
+#     Ele deve conter os seguintes elementos:
+#         • Conjunto de estados;
+#         • Alfabeto do autômato;
+#         • Função delta;
+#         • Estado inicial;
+#         • Conjunto de estados finais.
+#     Esses elementos devem ser escritos da seguinte maneira (usando "q0" e "q1" como estados e "a" e "b" como símbolos de seu alfabeto):
+#     estados = {q0,q1}
+#     sigma = {a,b}
+#     delta = {((q0,a),q0),((q0,b),q1),((q1,a), q1),((q1,b),q0)}
+#     estado_inicial = q0
+#     estados_finais = {q0}
