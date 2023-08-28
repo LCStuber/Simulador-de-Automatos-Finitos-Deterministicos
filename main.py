@@ -81,15 +81,18 @@ class Automato:
 
 
 # Leitura do arquivo "autômato.txt"
-def lerArquivo():
-    arquivo = open("automato.txt", "r")
-    linhas = arquivo.readlines()
-    arquivo.close()
-    return linhas
+def lerArquivo(path:str):
+    try:
+        arquivo = open(path, "r")
+        linhas = arquivo.readlines()
+        arquivo.close()
+        return linhas
+    except FileNotFoundError:
+        exit(f'''O arquivo "{path}" não foi encontrado na mesma pasta que o programa Python. Por favor, verifique-o (ou remova o parâmetro de path na leitura de arquivo) e tente novamente. ''')
 
 
 # Função para interpretar os dados do arquivo e armazená-los em um dicionário
-def interpretarArquivo():
+def interpretarArquivo(path:str):
     dados = {
     "estados":None,
     "sigma":None,
@@ -98,7 +101,7 @@ def interpretarArquivo():
     "estados_finais":None
     }
 
-    for linha in lerArquivo():
+    for linha in lerArquivo(path):
         if linha[0] == "#" or linha == "\n":
             continue
         linha = linha.replace(" ","").strip()
@@ -141,8 +144,8 @@ def transcreverParaPython(dados):
 
 
 # Criação de um objeto Autômato interpretando os dados do arquivo
-def criarautomato():
-    automato = interpretarArquivo()
+def criarautomato(path:str="automato.txt"):
+    automato = interpretarArquivo(path)
     return automato
 
 
